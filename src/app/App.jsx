@@ -3,21 +3,27 @@ import "antd/dist/reset.css";
 import OnBoarding from "./OnBoarding";
 import TextBox from "./Textbox";
 import { fetchStream } from "../services/openAI";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import MessagesList from "./MessagesList";
+import { notification } from "antd";
 
 function App() {
   const [messages, updateMessages] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  function onSubmit(message) {
-    const messageItem = { role: "user", content: message };
-    const newMessages = [...messages, messageItem];
-    updateMessages(newMessages);
+  const controlerRef = useRef();
 
+  function onSubmit(message) {
+    let newMessages = messages;
+    if (message) {
+      const messageItem = { role: "user", content: message };
+      newMessages = [...messages, messageItem];
+      updateMessages(newMessages);
+    }
     const { length } = newMessages;
     fetchStream({
       messages: newMessages,
-      onMessage(text) {
+      onMessage(text, controller) {
+        controlerRef.current = controller;
         if (newMessages.length > length) {
           newMessages.pop();
         }
@@ -29,10 +35,18 @@ function App() {
       onEnd() {
         setLoading(false);
       },
-      onError() {
+      onError(err) {
         setLoading(false);
       },
     });
+  }
+
+  function onStop() {
+    controlerRef.current?.abort();
+    setLoading(false);
+  }
+  function onRegenerate() {
+    onSubmit();
   }
   return (
     <div className={styles.app}>
@@ -41,7 +55,13 @@ function App() {
         <MessagesList messages={messages} />
       </div>
       <div className={styles.footer}>
-        <TextBox isLoading={isLoading} onSubmit={onSubmit} />
+        <TextBox
+          isLoading={isLoading}
+          onSubmit={onSubmit}
+          messages={messages}
+          onStop={onStop}
+          onRegenerate={onRegenerate}
+        />
       </div>
     </div>
   );

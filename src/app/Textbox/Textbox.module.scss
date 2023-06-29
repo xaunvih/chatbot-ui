@@ -10,4 +10,11 @@
     transform: translateY(-50%);
     cursor: pointer;
   }
+
+  .btnRegenerate {
+    position: absolute;
+    left: 50%;
+    top: -80%;
+    transform: translateX(-50%);
+  }
 }

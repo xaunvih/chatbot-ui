@@ -2,22 +2,26 @@ import { createParser } from "eventsource-parser";
 import { setAbortController } from "./abortController";
 
 async function fetchMessages(messages = [], signal) {
-  const url = "https://api.openai.com/v1/chat/completions";
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + process.env.REACT_APP_OPEN_AI_KEY,
-    },
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo",
-      temperature: 1,
-      stream: true,
-      messages,
-    }),
-    signal,
-  });
-  return response;
+  try {
+    const url = "https://api.openai.com/v1/chat/completions";
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + process.env.REACT_APP_OPEN_AI_KEY,
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        temperature: 1,
+        stream: true,
+        messages,
+      }),
+      signal,
+    });
+    return response;
+  } catch (err) {
+    return;
+  }
 }
 
 async function* streamAsyncIterable(stream) {
