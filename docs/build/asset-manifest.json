@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "https://xaunvih.github.io/chatbot-ui/static/css/main.aa81451d.css",
+    "main.js": "https://xaunvih.github.io/chatbot-ui/static/js/main.62fd982b.js",
+    "index.html": "https://xaunvih.github.io/chatbot-ui/index.html",
+    "main.aa81451d.css.map": "https://xaunvih.github.io/chatbot-ui/static/css/main.aa81451d.css.map",
+    "main.62fd982b.js.map": "https://xaunvih.github.io/chatbot-ui/static/js/main.62fd982b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.aa81451d.css",
+    "static/js/main.62fd982b.js"
+  ]
+}
