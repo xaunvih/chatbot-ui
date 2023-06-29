@@ -1,14 +1,17 @@
-import stypes from "./App.module.css";
+import styles from "./App.module.scss";
 import "antd/dist/reset.css";
+import OnBoarding from "./OnBoarding";
+import TextBox from "./Textbox";
 
 function App() {
   return (
-    <div className={stypes.App}>
-      <header className={stypes["App-header"]}>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-      </header>
+    <div className={styles.app}>
+      <div className={styles.content}>
+        <OnBoarding />
+      </div>
+      <div className={styles.footer}>
+        <TextBox />
+      </div>
     </div>
   );
 }

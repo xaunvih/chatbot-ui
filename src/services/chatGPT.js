@@ -2,7 +2,7 @@ const requestHeaders = new Headers();
 requestHeaders.append("Content-Type", "application/json");
 requestHeaders.append(
   "Authorization",
-  "Bearer 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"
+  "Bearer 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"
 );
 const requestOptions = {
   method: "POST",

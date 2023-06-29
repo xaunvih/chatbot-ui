@@ -1,0 +1,34 @@
+.wrapper {
+  height: 100%;
+  width: 100%;
+  padding: 24px 8px;
+
+  .header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 32px;
+
+    h1 {
+      color: #0055bb;
+    }
+  }
+
+  .content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .card {
+    &:last-child {
+      margin-bottom: 12px;
+    }
+
+    :global {
+      .anticon {
+        position: relative;
+        bottom: 1px;
+        margin-right: 4px;
+      }
+    }
+  }
+}
