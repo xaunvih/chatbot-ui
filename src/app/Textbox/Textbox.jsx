@@ -2,22 +2,24 @@ import { Input } from "antd";
 import styles from "./Textbox.module.scss";
 import Icon, { SendOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import DotLoading from "../DotLoading";
+import { Spin } from "antd";
+
 const { TextArea } = Input;
 
-function TextBox() {
+function TextBox({ onSubmit, isLoading }) {
   const [message, setMesssage] = useState("");
   function onChanged(evt) {
     setMesssage(evt.target.value || "");
   }
-  function onSubmit() {
-    console.log("message: ", message);
+  function onIconClick() {
+    onSubmit(message);
     setMesssage();
   }
   function onPressEntered(evt) {
-    if (!evt.shiftKey) {
+    if (!evt.shiftKey && !isLoading) {
       evt.preventDefault();
-      onSubmit();
+      onSubmit(message);
+      setMesssage();
     }
   }
   return (
@@ -31,11 +33,15 @@ function TextBox() {
           onPressEnter={onPressEntered}
           value={message}
         />
-        <Icon
-          onClick={onSubmit}
-          className={styles.icon}
-          component={SendOutlined}
-        />
+        {!isLoading ? (
+          <Icon
+            onClick={onIconClick}
+            className={styles.icon}
+            component={SendOutlined}
+          />
+        ) : (
+          <Spin size="small" className={styles.icon} />
+        )}
       </div>
     </section>
   );
