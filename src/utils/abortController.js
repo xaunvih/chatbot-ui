@@ -5,6 +5,7 @@ export function setAbortController(onStop) {
     controller.abort();
     onStop && onStop();
   };
+
   return {
     controller,
     disconnect,

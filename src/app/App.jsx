@@ -5,7 +5,6 @@ import TextBox from "./Textbox";
 import { fetchStream } from "../services/openAI";
 import { useRef, useState } from "react";
 import MessagesList from "./MessagesList";
-import { notification } from "antd";
 
 function App() {
   const [messages, updateMessages] = useState([]);
@@ -19,6 +18,7 @@ function App() {
       newMessages = [...messages, messageItem];
       updateMessages(newMessages);
     }
+
     const { length } = newMessages;
     fetchStream({
       messages: newMessages,
@@ -35,7 +35,7 @@ function App() {
       onEnd() {
         setLoading(false);
       },
-      onError(err) {
+      onError() {
         setLoading(false);
       },
     });

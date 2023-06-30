@@ -1,14 +1,14 @@
 import { createParser } from "eventsource-parser";
-import { setAbortController } from "./abortController";
+import { setAbortController } from "../utils/abortController";
+import { configs } from "../config";
 
 async function fetchMessages(messages = [], signal) {
   try {
-    const url = "https://api.openai.com/v1/chat/completions";
-    const response = await fetch(url, {
+    const response = await fetch(configs.OPENAI_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + process.env.REACT_APP_OPEN_AI_KEY,
+        Authorization: "Bearer " + configs.OPENAI_KEY,
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
