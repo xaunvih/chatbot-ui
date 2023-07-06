@@ -9,34 +9,39 @@ import MessagesList from "./MessagesList";
 function App() {
   const [messages, updateMessages] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const [isStreaming, setStreaming] = useState(false);
   const controlerRef = useRef();
 
   function onSubmit(message) {
     let newMessages = messages;
     if (message) {
       const messageItem = { role: "user", content: message };
-      newMessages = [...messages, messageItem];
+      const assistantItem = { role: "assistant", content: "" };
+      newMessages = [...messages, messageItem, assistantItem];
       updateMessages(newMessages);
     }
 
     const { length } = newMessages;
+    setLoading(true);
     fetchStream({
       messages: newMessages,
       onMessage(text, controller) {
         controlerRef.current = controller;
-        if (newMessages.length > length) {
+        if (newMessages.length === length) {
           newMessages.pop();
         }
         updateMessages([...newMessages, { role: "assistant", content: text }]);
       },
       onStart() {
-        setLoading(true);
+        setStreaming(true);
       },
       onEnd() {
         setLoading(false);
+        setStreaming(false);
       },
       onError() {
         setLoading(false);
+        setStreaming(false);
       },
     });
   }
@@ -48,11 +53,16 @@ function App() {
   function onRegenerate() {
     onSubmit();
   }
+
   return (
     <div className={styles.app}>
       <div className={styles.content}>
         {!messages.length && <OnBoarding />}
-        <MessagesList messages={messages} />
+        <MessagesList
+          isStreaming={isStreaming}
+          isLoading={isLoading}
+          messages={messages}
+        />
       </div>
       <div className={styles.footer}>
         <TextBox
