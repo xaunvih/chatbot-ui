@@ -1,6 +1,6 @@
 import "antd/dist/reset.css";
 import data from "./data-law.json";
-import { Card, Form, Input, Table } from "antd";
+import { Button, Card, Form, Input, Space, Table } from "antd";
 import { Fragment } from "react";
 import { useState } from "react";
 
@@ -20,6 +20,7 @@ const dataNew = data[0].rows.map((item) => {
 
 function App() {
   const [list, setList] = useState(dataNew);
+  const [form] = Form.useForm();
   function onFinish(values) {
     const newList = dataNew.filter((item) => {
       return item.Name.includes(values.search);
@@ -30,11 +31,25 @@ function App() {
   return (
     <Fragment>
       <Card style={{ marginBottom: 8 }}>
-        <Form onFinish={onFinish}>
+        <Form form={form} onFinish={onFinish}>
           <Form.Item name="search">
             <Input type="search" placeholder="Enter name for search" />
           </Form.Item>
         </Form>
+        <Space>
+          <Button type="primary" style={{ width: 150 }} onClick={form.submit}>
+            Search
+          </Button>
+          <Button
+            style={{ width: 150 }}
+            onClick={() => {
+              setList(dataNew);
+              form.resetFields();
+            }}
+          >
+            Reset
+          </Button>
+        </Space>
       </Card>
       <Card>
         <Table
