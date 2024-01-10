@@ -1,79 +1,59 @@
-import styles from "./App.module.scss";
 import "antd/dist/reset.css";
-import OnBoarding from "./OnBoarding";
-import TextBox from "./Textbox";
-import { fetchStream } from "../services/openAI";
-import { useRef, useState } from "react";
-import MessagesList from "./MessagesList";
+import data from "./data-law.json";
+import { Card, Form, Input, Table } from "antd";
+import { Fragment } from "react";
+import { useState } from "react";
+
+const { Column } = Table;
+
+const dataNew = data[0].rows.map((item) => {
+  return {
+    ID: item[0],
+    Name: item[1],
+    Object: item[2],
+    Fines: item[3],
+    Additional_Penalties: item[4],
+    Remedial_Measures: item[5],
+    Other_Penalties: item[6]
+  };
+});
 
 function App() {
-  const [messages, updateMessages] = useState([]);
-  const [isLoading, setLoading] = useState(false);
-  const [isStreaming, setStreaming] = useState(false);
-  const controlerRef = useRef();
-
-  function onSubmit(message) {
-    let newMessages = messages;
-    if (message) {
-      const messageItem = { role: "user", content: message };
-      const assistantItem = { role: "assistant", content: "" };
-      newMessages = [...messages, messageItem, assistantItem];
-      updateMessages(newMessages);
-    }
-
-    const { length } = newMessages;
-    setLoading(true);
-    fetchStream({
-      messages: newMessages,
-      onMessage(text, controller) {
-        controlerRef.current = controller;
-        if (newMessages.length === length) {
-          newMessages.pop();
-        }
-        updateMessages([...newMessages, { role: "assistant", content: text }]);
-      },
-      onStart() {
-        setStreaming(true);
-      },
-      onEnd() {
-        setLoading(false);
-        setStreaming(false);
-      },
-      onError() {
-        setLoading(false);
-        setStreaming(false);
-      },
+  const [list, setList] = useState(dataNew);
+  function onFinish(values) {
+    const newList = list.filter((item) => {
+      return item.Name.includes(values.search);
     });
-  }
-
-  function onStop() {
-    controlerRef.current?.abort();
-    setLoading(false);
-  }
-  function onRegenerate() {
-    onSubmit();
+    setList(newList);
   }
 
   return (
-    <div className={styles.app}>
-      <div className={styles.content}>
-        {!messages.length && <OnBoarding />}
-        <MessagesList
-          isStreaming={isStreaming}
-          isLoading={isLoading}
-          messages={messages}
-        />
-      </div>
-      <div className={styles.footer}>
-        <TextBox
-          isLoading={isLoading}
-          onSubmit={onSubmit}
-          messages={messages}
-          onStop={onStop}
-          onRegenerate={onRegenerate}
-        />
-      </div>
-    </div>
+    <Fragment>
+      <Card style={{ marginBottom: 8 }}>
+        <Form onFinish={onFinish}>
+          <Form.Item name="search">
+            <Input type="search" placeholder="Enter name for search" />
+          </Form.Item>
+        </Form>
+      </Card>
+      <Card>
+        <Table
+          dataSource={list}
+          rowKey="ID"
+          pagination={{ position: ["topRight", "bottomRight"] }}
+        >
+          <Column title="ID" dataIndex="ID" />
+          <Column title="Name" dataIndex="Name" />
+          <Column title="Object" dataIndex="Object" />
+          <Column title="Fines" dataIndex="Fines" />
+          <Column
+            title="Additional_Penalties"
+            dataIndex="Additional_Penalties"
+          />
+          <Column title="Other_Penalties" dataIndex="Other_Penalties" />
+        </Table>
+      </Card>
+    </Fragment>
   );
 }
 
