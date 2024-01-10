@@ -3,6 +3,7 @@ import data from "./data-law.json";
 import { Button, Card, Form, Input, Space, Table } from "antd";
 import { Fragment } from "react";
 import { useState } from "react";
+import Highlighter from "react-highlight-words";
 
 const { Column } = Table;
 
@@ -22,8 +23,9 @@ function App() {
   const [list, setList] = useState(dataNew);
   const [form] = Form.useForm();
   function onFinish(values) {
+    const keyword = String(values.search).toLocaleLowerCase();
     const newList = dataNew.filter((item) => {
-      return item.Name.includes(values.search);
+      return item.Name.toLocaleLowerCase().includes(keyword);
     });
     setList(newList);
   }
@@ -31,7 +33,7 @@ function App() {
   return (
     <Fragment>
       <Card style={{ marginBottom: 8 }}>
-        <Form form={form} onFinish={onFinish}>
+        <Form form={form} onFinish={onFinish} autoComplete="off">
           <Form.Item name="search">
             <Input type="search" placeholder="Enter name for search" />
           </Form.Item>
@@ -58,7 +60,20 @@ function App() {
           pagination={{ position: ["topRight", "bottomRight"] }}
         >
           <Column title="ID" dataIndex="ID" />
-          <Column title="Name" dataIndex="Name" />
+          <Column
+            title="Name"
+            dataIndex="Name"
+            render={(name) => {
+              return (
+                <Highlighter
+                  highlightStyle={{ backgroundColor: "yellow" }}
+                  searchWords={[form.getFieldValue("search")]}
+                  autoEscape={true}
+                  textToHighlight={name}
+                />
+              );
+            }}
+          />
           <Column title="Object" dataIndex="Object" />
           <Column title="Fines" dataIndex="Fines" />
           <Column
