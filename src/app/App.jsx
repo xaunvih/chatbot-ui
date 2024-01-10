@@ -21,7 +21,7 @@ const dataNew = data[0].rows.map((item) => {
 function App() {
   const [list, setList] = useState(dataNew);
   function onFinish(values) {
-    const newList = list.filter((item) => {
+    const newList = dataNew.filter((item) => {
       return item.Name.includes(values.search);
     });
     setList(newList);
